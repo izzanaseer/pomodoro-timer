@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Pomodoro Timer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="timer-container">
+        <h2 id="timer-state">Focus Time</h2>
+        <div id="time-display">25:00</div>
+
+        <div class="settings">
+            <label>Focus: <input type="number" id="focus-input" value="25" min="1"> min</label>
+            <label>Break: <input type="number" id="break-input" value="5" min="1"> min</label>
+        </div>
+
+        <div class="controls">
+            <button id="start-btn">Start</button>
+            <button id="pause-btn" disabled>Pause</button>
+            <button id="reset-btn">Reset</button>
+        </div>
+
+        <div class="history-section">
+            <h3>Today's History</h3>
+            <ul id="history-list">
+                </ul>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

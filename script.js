@@ -28,11 +28,6 @@ function playAlarm() {
     alarmSound.play().catch(error => console.log("Audio waiting for user click:", error));
 }
 
-// Temporary placeholder function so the code doesn't crash
-function logSession() {
-    console.log("Session completed! History logging will go here next.");
-}
-
 // Updates the big text display on the screen
 function updateDisplay() {
     const minutes = Math.floor(timeLeft / 60);
@@ -159,5 +154,60 @@ resetBtn.addEventListener('click', () => {
     updateTheme();
 });
 
-// Initialize the screen right away on page load
+// Saves a log of completed focus session
+function logSession() {
+    // Get current time formatted beautifully (e.g., "3:42 PM")
+    const now = new Date();
+    const timestamp = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    
+    // Format the history string matching the assessment guidelines
+    const duration = focusInput.value;
+    const logText = `✓ ${duration}:00 focus — ${timestamp}`;
+    
+    // Retrieve existing history array from localStorage, or create an empty one if empty
+    let history = JSON.parse(localStorage.getItem('pomodoroHistory')) || [];
+    
+    // Add our new session to the top of our list
+    history.unshift(logText);
+    
+    // Save the updated array back to localStorage
+    localStorage.setItem('pomodoroHistory', JSON.stringify(history));
+    localStorage.setItem('pomodoroDate', now.toDateString()); // Save today's date stamp
+    
+    // Refresh the visual list on the screen
+    renderHistory();
+}
+
+// Draws the history list items dynamically inside our HTML <ul> element
+function renderHistory() {
+    // Clear whatever was inside the list first
+    historyList.innerHTML = '';
+    
+    const history = JSON.parse(localStorage.getItem('pomodoroHistory')) || [];
+    
+    // Loop through our array and add them as <li> elements
+    history.forEach(sessionText => {
+        const li = document.createElement('li');
+        li.textContent = sessionText;
+        historyList.appendChild(li);
+    });
+}
+
+// Checks if a new day has arrived. If so, clears out old logs.
+function checkAndResetDailyHistory() {
+    const today = new Date().toDateString();
+    const savedDate = localStorage.getItem('pomodoroDate');
+    
+    // If the date stored in browser memory doesn't match today's current date, wipe it!
+    if (savedDate && savedDate !== today) {
+        localStorage.removeItem('pomodoroHistory');
+        localStorage.removeItem('pomodoroDate');
+    }
+    
+    // Render whatever history is left (either today's logs or a clean empty slate)
+    renderHistory();
+}
+
+// Initializing screen right away on page load
 updateDisplay();
+checkAndResetDailyHistory();
